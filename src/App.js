@@ -4,10 +4,13 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.addImage = this.addImage.bind(this);
     this.state = {
       images: [],
+      caption: "",
+      image: "",
     }
+    this.addImage = this.addImage.bind(this);
+    this.handleInput = this.handleInput.bind(this);
   }
 
   componentDidMount() {
@@ -24,15 +27,45 @@ class App extends Component {
     this.setState({ images: images });
   }
 
-  addImage(image){
-    const images = [...this.state.images]
+  addImage(event) {
+    event.preventDefault();
+    const images = [...this.state.images];
+    const image = {
+      image: this.state.image,
+      caption: this.state.caption,
+    }
     images.push(image);
-    this.setState({ images })
+    this.setState({ images });
   }
 
-  render(){
-    return(
-      <p>{this.addImage} {this.state.images}</p>
+  handleInput(event) {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+
+  render() {
+
+
+    const images = this.state.images.map(image => (
+
+        <div>
+          <img src={image.image} alt="#"/>
+          <p>{image.caption}</p>
+        </div>
+
+    ));
+
+
+    return (
+      <React.Fragment>
+        <form onSubmit={this.addImage} >
+          <label htmlFor="image">URL:</label>
+          <input id="image" name="image" value={this.state.image} onChange={this.handleInput} />
+          <label htmlFor="caption">Caption:</label>
+          <input id="caption" name="caption" value={this.state.caption} onChange={this.handleInput} />
+          <button type="submit">Add</button>
+        </form>
+        {images}
+      </React.Fragment>
     );
   }
 }
